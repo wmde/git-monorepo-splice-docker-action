@@ -1,0 +1,40 @@
+# action.yml
+name: 'git-monorepo-splice'
+description: 'splice git histories of libraries before and after being migrated to a monorepo'
+inputs:
+    privateKey:
+        description: 'Private SSH Key for pushing to the target repo'
+        required: true
+    targetOrg:
+        description: 'The github organization (or user) of the target repository'
+        required: true
+    targetRepo:
+        description: 'The target repository'
+        required: true
+    targetBranch:
+        description: 'The target branch'
+        required: true
+    monorepoParentCommit1:
+        description: 'A parent of the merge commit that introduced the library to the monorepo'
+        required: true
+    monorepoParentCommit2:
+        description: 'A parent of the merge commit that introduced the library to the monorepo'
+        required: true
+    lastPreMigrationCommit:
+        description: 'The last commit of the library before merging into the monorepo'
+        required: true
+    filterArguments:
+        description: 'additional arguments to pass to git-filter-repo'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  env:
+    SSH_PRIVATE_KEY: ${{ inputs.privateKey }}
+    TARGET_ORG: ${{ inputs.targetOrg }}
+    TARGET_REPO: ${{ inputs.targetRepo }}
+    TARGET_BRANCH: ${{ inputs.targetBranch }}
+    PARENT_COMMIT_ONE: ${{ inputs.monorepoParentCommit1 }}
+    PARENT_COMMIT_TWO: ${{ inputs.monorepoParentCommit2 }}
+    PRE_MIGRATION_COMMIT: ${{ inputs.lastPreMigrationCommit }}
+  args:
+    - ${{ inputs.filterArguments }}
