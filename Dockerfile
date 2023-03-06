@@ -5,6 +5,9 @@ RUN apk update && apk upgrade && \
 
 RUN pip3 install git-filter-repo
 
+# T314987: /github/workspace is not owned by the same user
+RUN git config --system --add safe.directory /github/workspace
+
 COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
